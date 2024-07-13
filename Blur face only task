@@ -1,0 +1,26 @@
+#code to blur face only
+import cv2
+cap = cv2.VideoCapture(0)
+facemodel = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+while True:
+    status, photo = cap.read()
+
+    myfacecoord = facemodel.detectMultiScale(photo)
+    #print(myfacecoord)
+
+    if len(myfacecoord) == 1:
+        x1 = myfacecoord[0][0]
+        y1 = myfacecoord[0][1]
+        x2 = myfacecoord[0][0] + myfacecoord[0][2]
+        y2 = myfacecoord[0][1] + myfacecoord[0][3]
+        np = photo[y1:y2,x1:x2]
+        bnp = cv2.blur(np,(100,100))
+        #cv2.rectangle(photo , (x1,y1) , (x2,y2) , [0,255,0], 5  )
+        #bnp = cv2.blur(np,(100,100))
+        photo[y1:y2,x1:x2] = bnp
+    cv2.imshow("Face Blur" , photo)
+    if cv2.waitKey(10) == 13:
+        break
+        
+cv2.destroyAllWindows()
+cap.release()
